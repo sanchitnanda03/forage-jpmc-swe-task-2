@@ -60,12 +60,12 @@ OVERLAP = 4
 #
 # Test Data
 
-def bwalk(min, max, std):
+def bwalk(mini, maxi, std):
     """ Generates a bounded random walk. """
-    rng = max - min
+    rng = maxi - mini
     while True:
-        max += normalvariate(0, std)
-        yield abs((max % (rng * 2)) - rng) + min
+        maxi += normalvariate(0, std)
+        yield abs((maxi % (rng * 2)) - rng) + mini
 
 
 def market(t0=MARKET_OPEN):
@@ -131,12 +131,12 @@ def clear_book(buy=None, sell=None):
     return buy, sell
 
 
-def order_book(orders, book, stock_name):
+def order_book(orderss, book, stock_name):
     """ Generates a series of order books from a series of orders.  Order books
         are mutable lists, and mutating them during generation will affect the
         next turn!
     """
-    for t, stock, side, order, size in orders:
+    for t, stock, side, order, size in orderss:
         if stock_name == stock:
             new = add_book(book.get(side, []), order, size)
             book[side] = sorted(new, reverse=side == 'buy', key=lambda x: x[0])
@@ -176,7 +176,7 @@ class ThreadedHTTPServer(ThreadingMixIn, http.server.HTTPServer):
     allow_reuse_address = True
 
     def shutdown(self):
-        """ Override MRO to shutdown properly. """
+        """ Override MRO to shut down properly. """
         self.socket.close()
         http.server.HTTPServer.shutdown(self)
 
@@ -227,7 +227,7 @@ def run(routes, host='0.0.0.0', port=8080):
         def log_message(self, *args, **kwargs):
             pass
 
-        def do_GET(self):
+        def do_get(self):
             get(self, routes)
 
     server = ThreadedHTTPServer((host, port), RequestHandler)
